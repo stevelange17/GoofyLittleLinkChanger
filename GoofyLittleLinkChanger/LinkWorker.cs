@@ -4,6 +4,9 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
 using Microsoft.VisualStudio.Services.WebApi.Patch;
 
+using Newtonsoft.Json;
+using GoofyLittleLinkChanger;
+
 namespace ADOBulkChangeLinkTypes
 {
     /// <summary>
@@ -12,16 +15,33 @@ namespace ADOBulkChangeLinkTypes
     public class LinkWorker
     {
         #region Properties
-        private readonly Uri uri;
-        private readonly string personalAccessToken;
-        private readonly string projectName;
-        private readonly string sourceWIT;
-        private readonly string targetWIT;
-        private readonly string sourceLinkType;
-        private readonly string targetLinkType;
+        public readonly Uri uri;
+        public readonly string personalAccessToken;
+        public readonly string projectName;
+        public readonly string sourceWIT;
+        public readonly string targetWIT;
+        public readonly string sourceLinkType;
+        public readonly string targetLinkType;
         private readonly VssBasicCredential credentials;
         private readonly WorkItemTrackingHttpClient witClient;
         #endregion
+
+        public LinkWorker(string configFilePath)
+        {
+            Console.WriteLine("Reading config file: {0}", configFilePath);
+
+            ConfigOptions options = JsonConvert.DeserializeObject<ConfigOptions>(File.ReadAllText(configFilePath));
+            uri = new Uri("https://dev.azure.com/" + options.orgName);
+            this.personalAccessToken = options.personalAccessToken;
+            this.projectName = options.projectName;
+            this.sourceWIT = options.sourceWorkItemType;
+            targetWIT = options.targetWorkItemType;
+            this.sourceLinkType = options.sourceLinkType;
+            targetLinkType = options.targetLinkType;
+
+            credentials = new VssBasicCredential(string.Empty, this.personalAccessToken);
+            witClient = new WorkItemTrackingHttpClient(uri, credentials);
+        }
 
         public LinkWorker(string orgName, string personalAccessToken, string projectName, string sourceWIT, string destinationWIT, string sourceLinkType, string destinationLinkType)
         {
@@ -57,13 +77,13 @@ namespace ADOBulkChangeLinkTypes
                 targetRelationIndexes = new();
                 targetWorkItemIds = new();
 
-                if (wi.Relations != null) 
+                if (wi.Relations != null)
                 {
                     WorkItemRelation rel;
                     for (int i = 0; i < wi.Relations.Count; i++)
                     {
                         rel = wi.Relations[i];
-                        if (rel.Rel == sourceLinkType) 
+                        if (rel.Rel == sourceLinkType)
                         {
                             var linkedItem = witClient.GetWorkItemAsync(GetWorkItemIdFromUrl(rel.Url)).Result;
                             if (linkedItem.Fields["System.WorkItemType"].ToString() == targetWIT)

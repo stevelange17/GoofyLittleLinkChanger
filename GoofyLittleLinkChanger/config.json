@@ -1,0 +1,9 @@
+{
+  "orgName": "stevelangedemos",
+  "projectName": "Import Test 6",
+  "sourceWorkItemType": "User Story",
+  "targetWorkItemType": "Test Case",
+  "sourceLinkType": "System.LinkTypes.Hierarchy-Forward",
+  "targetLinkType": "Microsoft.VSTS.Common.TestedBy-Forward",
+  "personalAccessToken": "osqn5aq6ss6uhtiljytfumupozt6gxtbkzd6oprq7moskmt47w4a"
+}
