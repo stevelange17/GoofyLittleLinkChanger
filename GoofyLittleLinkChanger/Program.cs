@@ -5,7 +5,16 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using System.ComponentModel;
 
-LinkWorker worker = new LinkWorker("config.json");
+string _configFile = "config.json";
+
+if (args.Length > 0)
+{
+    // Get args
+    _configFile = args[0];
+}
+
+
+LinkWorker worker = new LinkWorker(_configFile);
 
 Console.WriteLine("\n------------------------------------------------");
 Console.WriteLine("Goofy Little Link Changer");

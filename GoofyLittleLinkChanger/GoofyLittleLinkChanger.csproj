@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <None Include="C:\Users\stevenl\Desktop\config.json" Link="config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
